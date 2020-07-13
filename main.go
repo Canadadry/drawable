@@ -57,22 +57,22 @@ func main() {
 	fmt.Println("OpenGL version", version)
 
 	// Configure the vertex and fragment shaders
-	program, err := program.New(vertexShader, fragmentShader, "outputColor")
+	p, err := program.New(vertexShader, fragmentShader, "outputColor")
 	if err != nil {
 		panic(err)
 	}
 
-	program.Use()
+	p.Use()
 
-	err = program.Uniform("projection", projection)
+	err = p.Uniform("projection", projection)
 	if err != nil {
 		panic(err)
 	}
-	err = program.Uniform("camera", camera)
+	err = p.Uniform("camera", camera)
 	if err != nil {
 		panic(err)
 	}
-	err = program.Uniform("model", model)
+	err = p.Uniform("model", model)
 	if err != nil {
 		panic(err)
 	}
@@ -83,23 +83,11 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Configure the vertex data
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
-
-	vertAttrib := program.Attribute("vert")
-	gl.EnableVertexAttribArray(vertAttrib)
-	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
-
-	texCoordAttrib := program.Attribute("vertTexCoord")
-	gl.EnableVertexAttribArray(texCoordAttrib)
-	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
+	part := []program.VBOPart{
+		{"vert", 3},
+		{"vertTexCoord", 2},
+	}
+	b := program.NewBuffer(p, part, cubeVertices)
 
 	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
@@ -121,13 +109,13 @@ func main() {
 		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
 
 		// Render
-		program.Use()
-		err = program.Uniform("model", model)
+		p.Use()
+		err = p.Uniform("model", model)
 		if err != nil {
 			panic(err)
 		}
 
-		gl.BindVertexArray(vao)
+		b.Bind()
 
 		t1.Bind()
 

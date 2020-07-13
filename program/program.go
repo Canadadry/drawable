@@ -9,7 +9,7 @@ import (
 
 type Program interface {
 	Use()
-	Uniform(name string, value interface{})
+	Uniform(name string, value interface{}) error
 	Attribute(name string) uint32
 }
 
