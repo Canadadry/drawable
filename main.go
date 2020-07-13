@@ -20,6 +20,12 @@ import (
 const windowWidth = 800
 const windowHeight = 600
 
+var (
+	projection = mgl32.Perspective(mgl32.DegToRad(45.0), float32(windowWidth)/windowHeight, 0.1, 10.0)
+	camera     = mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
+	model      = mgl32.Ident4()
+)
+
 func init() {
 	// GLFW event handling must run on the main OS thread
 	runtime.LockOSThread()
@@ -58,20 +64,18 @@ func main() {
 
 	program.Use()
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(windowWidth)/windowHeight, 0.1, 10.0)
-	projectionUniform := gl.GetUniformLocation(program.GlId, gl.Str("projection\x00"))
-	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
-
-	camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-	cameraUniform := gl.GetUniformLocation(program.GlId, gl.Str("camera\x00"))
-	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
-
-	model := mgl32.Ident4()
-	modelUniform := gl.GetUniformLocation(program.GlId, gl.Str("model\x00"))
-	gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-
-	textureUniform := gl.GetUniformLocation(program.GlId, gl.Str("tex\x00"))
-	gl.Uniform1i(textureUniform, 0)
+	err = program.Uniform("projection", projection)
+	if err != nil {
+		panic(err)
+	}
+	err = program.Uniform("camera", camera)
+	if err != nil {
+		panic(err)
+	}
+	err = program.Uniform("model", model)
+	if err != nil {
+		panic(err)
+	}
 
 	gl.BindFragDataLocation(program.GlId, 0, gl.Str("outputColor\x00"))
 
@@ -120,7 +124,10 @@ func main() {
 
 		// Render
 		program.Use()
-		gl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+		err = program.Uniform("model", model)
+		if err != nil {
+			panic(err)
+		}
 
 		gl.BindVertexArray(vao)
 
