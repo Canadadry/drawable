@@ -6,15 +6,27 @@ import (
 	"strings"
 )
 
-func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
+type Program interface {
+	Use()
+}
+
+type implProgram struct {
+	GlId uint32
+}
+
+func (ip implProgram) Use() {
+	gl.UseProgram(ip.GlId)
+}
+
+func New(vertexShaderSource, fragmentShaderSource string) (implProgram, error) {
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
-		return 0, err
+		return implProgram{}, err
 	}
 
 	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
 	if err != nil {
-		return 0, err
+		return implProgram{}, err
 	}
 
 	program := gl.CreateProgram()
@@ -32,11 +44,11 @@ func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error)
 		log := strings.Repeat("\x00", int(logLength+1))
 		gl.GetProgramInfoLog(program, logLength, nil, gl.Str(log))
 
-		return 0, fmt.Errorf("failed to link program: %v", log)
+		return implProgram{}, fmt.Errorf("failed to link program: %v", log)
 	}
 
 	gl.DeleteShader(vertexShader)
 	gl.DeleteShader(fragmentShader)
 
-	return program, nil
+	return implProgram{GlId: program}, nil
 }
