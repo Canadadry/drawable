@@ -57,7 +57,7 @@ func main() {
 	fmt.Println("OpenGL version", version)
 
 	// Configure the vertex and fragment shaders
-	program, err := program.New(vertexShader, fragmentShader)
+	program, err := program.New(vertexShader, fragmentShader, "outputColor")
 	if err != nil {
 		panic(err)
 	}
@@ -77,8 +77,6 @@ func main() {
 		panic(err)
 	}
 
-	gl.BindFragDataLocation(program.GlId, 0, gl.Str("outputColor\x00"))
-
 	// Load the texture
 	t1, err := texture.FromImage("square.png")
 	if err != nil {
@@ -95,11 +93,11 @@ func main() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
 
-	vertAttrib := uint32(gl.GetAttribLocation(program.GlId, gl.Str("vert\x00")))
+	vertAttrib := program.Attribute("vert")
 	gl.EnableVertexAttribArray(vertAttrib)
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
 
-	texCoordAttrib := uint32(gl.GetAttribLocation(program.GlId, gl.Str("vertTexCoord\x00")))
+	texCoordAttrib := program.Attribute("vertTexCoord")
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
@@ -156,8 +154,7 @@ out vec2 fragTexCoord;
 void main() {
     fragTexCoord = vertTexCoord;
     gl_Position = projection * camera * model * vec4(vert, 1);
-}
-` + "\x00"
+}`
 
 var fragmentShader = `
 #version 330
@@ -170,8 +167,7 @@ out vec4 outputColor;
 
 void main() {
     outputColor = texture(tex, fragTexCoord);
-}
-` + "\x00"
+}`
 
 var cubeVertices = []float32{
 	//  X, Y, Z, U, V

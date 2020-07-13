@@ -10,21 +10,22 @@ import (
 type Program interface {
 	Use()
 	Uniform(name string, value interface{})
+	Attribute(name string) uint32
 }
 
 type implProgram struct {
-	GlId     uint32
+	glId     uint32
 	location map[string]int32
 }
 
 func (ip implProgram) Use() {
-	gl.UseProgram(ip.GlId)
+	gl.UseProgram(ip.glId)
 }
 
 func (ip implProgram) Uniform(name string, value interface{}) error {
 	l, ok := ip.location[name]
 	if !ok {
-		l = gl.GetUniformLocation(ip.GlId, gl.Str(name+"\x00"))
+		l = gl.GetUniformLocation(ip.glId, gl.Str(name+"\x00"))
 		if l < 0 {
 			return fmt.Errorf("Cannont found %s in program", name)
 		}
@@ -40,13 +41,17 @@ func (ip implProgram) Uniform(name string, value interface{}) error {
 	return nil
 }
 
-func New(vertexShaderSource, fragmentShaderSource string) (implProgram, error) {
-	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
+func (ip implProgram) Attribute(name string) uint32 {
+	return uint32(gl.GetAttribLocation(ip.glId, gl.Str(name+"\x00")))
+}
+
+func New(vertexShaderSource string, fragmentShaderSource string, output string) (implProgram, error) {
+	vertexShader, err := compileShader(vertexShaderSource+"\x00", gl.VERTEX_SHADER)
 	if err != nil {
 		return implProgram{}, err
 	}
 
-	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	fragmentShader, err := compileShader(fragmentShaderSource+"\x00", gl.FRAGMENT_SHADER)
 	if err != nil {
 		return implProgram{}, err
 	}
@@ -72,5 +77,7 @@ func New(vertexShaderSource, fragmentShaderSource string) (implProgram, error) {
 	gl.DeleteShader(vertexShader)
 	gl.DeleteShader(fragmentShader)
 
-	return implProgram{GlId: program, location: map[string]int32{}}, nil
+	gl.BindFragDataLocation(program, 0, gl.Str(output+"\x00"))
+
+	return implProgram{glId: program, location: map[string]int32{}}, nil
 }
