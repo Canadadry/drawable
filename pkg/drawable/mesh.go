@@ -8,44 +8,43 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-type CubeParam struct {
-	Pos        mgl32.Vec3
-	Size       float32
+type MeshParam struct {
+	Dimmension geometry.MeshDimmension
 	Texture    string
 	Projection mgl32.Mat4
 	Camera     mgl32.Mat4
 	Model      mgl32.Mat4
 }
 
-type Cube struct {
-	Param CubeParam
+type Mesh struct {
+	Param MeshParam
 	p     program.Program
 	g     geometry.Geometry
 	b     program.Buffer
 	t     texture.Texture
 }
 
-func (c *Cube) Prepare() error {
+func (m *Mesh) Prepare() error {
 	p, err := program.New(shader.Basic)
 	if err != nil {
 		return err
 	}
 	p.Use()
 
-	err = p.Uniform(shader.Basic.Uniform[0], c.Param.Projection)
+	err = p.Uniform(shader.Basic.Uniform[0], m.Param.Projection)
 	if err != nil {
 		return err
 	}
-	err = p.Uniform(shader.Basic.Uniform[1], c.Param.Camera)
+	err = p.Uniform(shader.Basic.Uniform[1], m.Param.Camera)
 	if err != nil {
 		return err
 	}
-	err = p.Uniform(shader.Basic.Uniform[2], c.Param.Model)
+	err = p.Uniform(shader.Basic.Uniform[2], m.Param.Model)
 	if err != nil {
 		return err
 	}
 
-	t, err := texture.FromImage(c.Param.Texture)
+	t, err := texture.FromImage(m.Param.Texture)
 	if err != nil {
 		return err
 	}
@@ -55,18 +54,18 @@ func (c *Cube) Prepare() error {
 		{shader.Basic.Attribute[1], 2},
 	}
 
-	c.p = p
-	c.g = geometry.NewCube(c.Param.Pos, c.Param.Size)
-	c.b = program.NewBuffer(p, part, c.g.Buf)
-	c.t = t
+	m.p = p
+	m.g = geometry.NewMesh(m.Param.Dimmension)
+	m.b = program.NewBuffer(p, part, m.g.Buf)
+	m.t = t
 
 	return nil
 }
 
-func (c *Cube) Draw() {
-	c.p.Use()
-	c.p.Uniform(shader.Basic.Uniform[2], c.Param.Model)
-	c.b.Bind()
-	c.t.Bind()
-	c.g.Draw()
+func (m *Mesh) Draw() {
+	m.p.Use()
+	m.p.Uniform(shader.Basic.Uniform[2], m.Param.Model)
+	m.b.Bind()
+	m.t.Bind()
+	m.g.Draw()
 }
