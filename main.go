@@ -1,10 +1,10 @@
 package main
 
 import (
-	"app/geometry"
-	"app/program"
-	"app/program/shader"
-	"app/texture"
+	"app/pkg/geometry"
+	"app/pkg/program"
+	"app/pkg/program/shader"
+	"app/pkg/texture"
 	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"

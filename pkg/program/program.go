@@ -1,7 +1,7 @@
 package program
 
 import (
-	"app/program/shader"
+	"app/pkg/program/shader"
 	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"

@@ -1,10 +1,10 @@
 package drawable
 
 import (
-	"app/geometry"
-	"app/program"
-	"app/program/shader"
-	"app/texture"
+	"app/pkg/geometry"
+	"app/pkg/program"
+	"app/pkg/program/shader"
+	"app/pkg/texture"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -26,21 +26,21 @@ type Cube struct {
 }
 
 func (c *Cube) Prepare() error {
-	p, err := program.New(shader.Basic)
+	p, err := program.New(shader.BasicWithTexture)
 	if err != nil {
 		return err
 	}
 	p.Use()
 
-	err = p.Uniform(shader.Basic.Uniform[0], c.Param.Projection)
+	err = p.Uniform(shader.BasicWithTexture.Uniform[0], c.Param.Projection)
 	if err != nil {
 		return err
 	}
-	err = p.Uniform(shader.Basic.Uniform[1], c.Param.Camera)
+	err = p.Uniform(shader.BasicWithTexture.Uniform[1], c.Param.Camera)
 	if err != nil {
 		return err
 	}
-	err = p.Uniform(shader.Basic.Uniform[2], c.Param.Model)
+	err = p.Uniform(shader.BasicWithTexture.Uniform[2], c.Param.Model)
 	if err != nil {
 		return err
 	}
@@ -51,8 +51,8 @@ func (c *Cube) Prepare() error {
 	}
 
 	part := []program.VBOPart{
-		{shader.Basic.Attribute[0], 3},
-		{shader.Basic.Attribute[1], 2},
+		{shader.BasicWithTexture.Attribute[0], 3},
+		{shader.BasicWithTexture.Attribute[1], 2},
 	}
 
 	c.p = p
@@ -65,7 +65,7 @@ func (c *Cube) Prepare() error {
 
 func (c *Cube) Draw() {
 	c.p.Use()
-	c.p.Uniform(shader.Basic.Uniform[2], c.Param.Model)
+	c.p.Uniform(shader.BasicWithTexture.Uniform[2], c.Param.Model)
 	c.b.Bind()
 	c.t.Bind()
 	c.g.Draw()
