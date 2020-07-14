@@ -19,9 +19,9 @@ type CubeParam struct {
 
 type Cube struct {
 	Param CubeParam
-	p     program
-	g     geometry
-	t     texture
+	p     program.Program
+	g     geometry.Geometry
+	t     texture.Texture
 }
 
 func (c cube) Prepare() error {

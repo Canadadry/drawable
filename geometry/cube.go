@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-func NewCube(at mgl32.Vec3, size float32) Geomtry {
+func NewCube(at mgl32.Vec3, size float32) Geometry {
 	cubeVertices := []float32{
 		//  X, Y, Z, U, V
 		// Bottom
