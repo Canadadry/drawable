@@ -56,7 +56,7 @@ func NewCube(at mgl32.Vec3, size float32) Geometry {
 		size + at[0], size + at[1], -size + at[2], 0.0, 0.0,
 		size + at[0], size + at[1], size + at[2], 0.0, 1.0,
 	}
-	return Geomtry{
+	return Geometry{
 		Buf:   cubeVertices,
 		Width: 5,
 		Mode:  gl.TRIANGLES,
