@@ -120,6 +120,8 @@ func main() {
 
 Instead of using a hard to read and maintain OpenGL interface you can more strait forward Drawable API. 
 
+![](example/screen.png)
+
 ## Futur
 
 I want to build a more complet set of tool on top of those 3 modules (`geometry`,`program`,`texture`) 
