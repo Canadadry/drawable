@@ -6,6 +6,7 @@
 package main // import "github.com/go-gl/example/gl41core-cube"
 
 import (
+	"app/geometry"
 	"app/program"
 	"app/texture"
 	"fmt"
@@ -87,26 +88,20 @@ func main() {
 		{"vert", 3},
 		{"vertTexCoord", 2},
 	}
-	b := program.NewBuffer(p, part, cubeVertices)
+
+	g := geometry.NewCube(mgl32.Vec3{}, 1.0)
+
+	b := program.NewBuffer(p, part, g.Buf)
 
 	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
-	angle := 0.0
-	previousTime := glfw.GetTime()
-
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-		// Update
-		time := glfw.GetTime()
-		elapsed := time - previousTime
-		previousTime = time
-
-		angle += elapsed
-		model = mgl32.HomogRotate3D(float32(angle), mgl32.Vec3{0, 1, 0})
+		model = mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0, 1, 0})
 
 		// Render
 		p.Use()
@@ -119,7 +114,7 @@ func main() {
 
 		t1.Bind()
 
-		gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
+		g.Draw()
 
 		// Maintenance
 		window.SwapBuffers()
@@ -156,54 +151,3 @@ out vec4 outputColor;
 void main() {
     outputColor = texture(tex, fragTexCoord);
 }`
-
-var cubeVertices = []float32{
-	//  X, Y, Z, U, V
-	// Bottom
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-
-	// Top
-	-1.0, 1.0, -1.0, 0.0, 0.0,
-	-1.0, 1.0, 1.0, 0.0, 1.0,
-	1.0, 1.0, -1.0, 1.0, 0.0,
-	1.0, 1.0, -1.0, 1.0, 0.0,
-	-1.0, 1.0, 1.0, 0.0, 1.0,
-	1.0, 1.0, 1.0, 1.0, 1.0,
-
-	// Front
-	-1.0, -1.0, 1.0, 1.0, 0.0,
-	1.0, -1.0, 1.0, 0.0, 0.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-	1.0, -1.0, 1.0, 0.0, 0.0,
-	1.0, 1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-
-	// Back
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	-1.0, 1.0, -1.0, 0.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	-1.0, 1.0, -1.0, 0.0, 1.0,
-	1.0, 1.0, -1.0, 1.0, 1.0,
-
-	// Left
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, -1.0, 1.0, 0.0,
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-	-1.0, 1.0, -1.0, 1.0, 0.0,
-
-	// Right
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, 1.0, -1.0, 0.0, 0.0,
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	1.0, 1.0, -1.0, 0.0, 0.0,
-	1.0, 1.0, 1.0, 0.0, 1.0,
-}
