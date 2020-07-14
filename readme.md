@@ -5,7 +5,7 @@ This is meant to be as less invasive as possible.
 
 This is build with 2D in mind but should not be limited to it.
 
-see `example to see more`
+see `example` to see more
 
 # Example 
 
@@ -118,7 +118,7 @@ func main() {
 }
 ```
 
-Instead of using a hard to read and maintain OpenGL interface you can more strait forward Drawable API. 
+Instead of using a hard to read and maintain OpenGL interface you can use more strait forward Drawable API. 
 
 ![](example/screen.png)
 
