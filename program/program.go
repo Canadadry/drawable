@@ -1,8 +1,8 @@
 package program
 
 import (
-	"app/program/shader"
 	"fmt"
+	"github.com/canadadry/drawable/program/shader"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"strings"

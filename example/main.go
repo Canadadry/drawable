@@ -1,17 +1,16 @@
 package main
 
 import (
-	"app/geometry"
-	"app/program"
-	"app/program/shader"
-	"app/texture"
 	"fmt"
-	"log"
-	"runtime"
-
+	"github.com/canadadry/drawable/geometry"
+	"github.com/canadadry/drawable/program"
+	"github.com/canadadry/drawable/program/shader"
+	"github.com/canadadry/drawable/texture"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"log"
+	"runtime"
 )
 
 const windowWidth = 800
