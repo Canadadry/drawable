@@ -1,9 +1,4 @@
-// Copyright 2014 The go-gl Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-// Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
-package main // import "github.com/go-gl/example/gl41core-cube"
+package main
 
 import (
 	"app/geometry"
@@ -29,7 +24,6 @@ var (
 )
 
 func init() {
-	// GLFW event handling must run on the main OS thread
 	runtime.LockOSThread()
 }
 
@@ -50,7 +44,6 @@ func main() {
 	}
 	window.MakeContextCurrent()
 
-	// Initialize Glow
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
@@ -58,12 +51,10 @@ func main() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
-	// Configure the vertex and fragment shaders
 	p, err := program.New(shader.Basic)
 	if err != nil {
 		panic(err)
 	}
-
 	p.Use()
 
 	err = p.Uniform(shader.Basic.Uniform[0], projection)
@@ -79,8 +70,7 @@ func main() {
 		panic(err)
 	}
 
-	// Load the texture
-	t1, err := texture.FromImage("square.png")
+	t, err := texture.FromImage("square.png")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -94,7 +84,6 @@ func main() {
 
 	b := program.NewBuffer(p, part, g.Buf)
 
-	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
@@ -104,20 +93,12 @@ func main() {
 
 		model = mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0, 1, 0})
 
-		// Render
 		p.Use()
-		err = p.Uniform(shader.Basic.Uniform[2], model)
-		if err != nil {
-			panic(err)
-		}
-
+		p.Uniform(shader.Basic.Uniform[2], model)
 		b.Bind()
-
-		t1.Bind()
-
+		t.Bind()
 		g.Draw()
 
-		// Maintenance
 		window.SwapBuffers()
 		glfw.PollEvents()
 	}
