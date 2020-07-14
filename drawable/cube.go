@@ -1,10 +1,10 @@
 package drawable
 
 import (
-	"github.com/canadadry/drawable/geometry"
-	"github.com/canadadry/drawable/program"
-	"github.com/canadadry/drawable/program/shader"
-	"github.com/canadadry/drawable/texture"
+	"app/geometry"
+	"app/program"
+	"app/program/shader"
+	"app/texture"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

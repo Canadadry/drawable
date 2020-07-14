@@ -5,9 +5,14 @@ This is meant to be as less invasive as possible.
 
 This is build with 2D in mind but should not be limited to it.
 
-see `example` to see more
 
-# Example 
+## Example 
+
+To run the example : 
+```bash
+git clone https://github.com/canadadry/drawable
+go run main.go
+```
 
 This example is a simpler version of [the opengl cube](https://github.com/go-gl/example/blob/master/gl41core-cube/cube.go)
 
@@ -16,10 +21,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/canadadry/drawable/geometry"
-	"github.com/canadadry/drawable/program"
-	"github.com/canadadry/drawable/program/shader"
-	"github.com/canadadry/drawable/texture"
+	"app/geometry"
+	"app/program"
+	"app/program/shader"
+	"app/texture"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -120,7 +125,7 @@ func main() {
 
 Instead of using a hard to read and maintain OpenGL interface you can use more strait forward Drawable API. 
 
-![](example/screen.png)
+![](screen.png)
 
 ## Futur
 
@@ -131,7 +136,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/canadadry/drawable"
+	"app/drawable"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
