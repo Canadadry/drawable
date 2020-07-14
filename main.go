@@ -8,6 +8,7 @@ package main // import "github.com/go-gl/example/gl41core-cube"
 import (
 	"app/geometry"
 	"app/program"
+	"app/program/shader"
 	"app/texture"
 	"fmt"
 	"log"
@@ -58,22 +59,22 @@ func main() {
 	fmt.Println("OpenGL version", version)
 
 	// Configure the vertex and fragment shaders
-	p, err := program.New(vertexShader, fragmentShader, "outputColor")
+	p, err := program.New(shader.Basic)
 	if err != nil {
 		panic(err)
 	}
 
 	p.Use()
 
-	err = p.Uniform("projection", projection)
+	err = p.Uniform(shader.Basic.Uniform[0], projection)
 	if err != nil {
 		panic(err)
 	}
-	err = p.Uniform("camera", camera)
+	err = p.Uniform(shader.Basic.Uniform[1], camera)
 	if err != nil {
 		panic(err)
 	}
-	err = p.Uniform("model", model)
+	err = p.Uniform(shader.Basic.Uniform[2], model)
 	if err != nil {
 		panic(err)
 	}
@@ -85,8 +86,8 @@ func main() {
 	}
 
 	part := []program.VBOPart{
-		{"vert", 3},
-		{"vertTexCoord", 2},
+		{shader.Basic.Attribute[0], 3},
+		{shader.Basic.Attribute[1], 2},
 	}
 
 	g := geometry.NewCube(mgl32.Vec3{}, 1.0)
@@ -105,7 +106,7 @@ func main() {
 
 		// Render
 		p.Use()
-		err = p.Uniform("model", model)
+		err = p.Uniform(shader.Basic.Uniform[2], model)
 		if err != nil {
 			panic(err)
 		}
@@ -121,33 +122,3 @@ func main() {
 		glfw.PollEvents()
 	}
 }
-
-var vertexShader = `
-#version 330
-
-uniform mat4 projection;
-uniform mat4 camera;
-uniform mat4 model;
-
-in vec3 vert;
-in vec2 vertTexCoord;
-
-out vec2 fragTexCoord;
-
-void main() {
-    fragTexCoord = vertTexCoord;
-    gl_Position = projection * camera * model * vec4(vert, 1);
-}`
-
-var fragmentShader = `
-#version 330
-
-uniform sampler2D tex;
-
-in vec2 fragTexCoord;
-
-out vec4 outputColor;
-
-void main() {
-    outputColor = texture(tex, fragTexCoord);
-}`
