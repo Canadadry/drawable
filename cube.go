@@ -21,10 +21,11 @@ type Cube struct {
 	Param CubeParam
 	p     program.Program
 	g     geometry.Geometry
+	b     program.Buffer
 	t     texture.Texture
 }
 
-func (c cube) Prepare() error {
+func (c *Cube) Prepare() error {
 	p, err := program.New(shader.Basic)
 	if err != nil {
 		return err
@@ -57,18 +58,15 @@ func (c cube) Prepare() error {
 	c.p = p
 	c.g = geometry.NewCube(c.Param.Pos, c.Param.Size)
 	c.b = program.NewBuffer(p, part, c.g.Buf)
+	c.t = t
 
 	return nil
 }
 
-func (c cube) Draw() {
+func (c *Cube) Draw() {
 	c.p.Use()
 	c.p.Uniform(shader.Basic.Uniform[2], c.Param.Model)
 	c.b.Bind()
 	c.t.Bind()
 	c.g.Draw()
-}
-
-func NewCube(param CubeParam) cube {
-	return cube{c: param}
 }

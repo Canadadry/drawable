@@ -41,13 +41,15 @@ func main() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
-	cube := drawable.NewCube(drawable.CubeParam{
-		Size:       1,
-		Texture:    "square.png",
-		Projection: mgl32.Perspective(mgl32.DegToRad(45.0), float32(windowWidth)/windowHeight, 0.1, 10.0),
-		Camera:     mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0}),
-		Model:      mgl32.Ident4(),
-	})
+	cube := drawable.Cube{
+		Param: drawable.CubeParam{
+			Size:       1,
+			Texture:    "square.png",
+			Projection: mgl32.Perspective(mgl32.DegToRad(45.0), float32(windowWidth)/windowHeight, 0.1, 10.0),
+			Camera:     mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0}),
+			Model:      mgl32.Ident4(),
+		},
+	}
 
 	err = cube.Prepare()
 	if err != nil {
